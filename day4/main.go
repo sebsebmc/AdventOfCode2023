@@ -72,5 +72,40 @@ func part1(input []string) {
 }
 
 func part2(input []string) {
-
+	parsed := make([][]int, len(input))
+	cards := make([]int, len(input))
+	instances := make([]int, len(input))
+	re := regexp.MustCompile(`\d+`)
+	total := 0
+	for idx, line := range input {
+		m := re.FindAllString(line, -1)
+		// fmt.Printf("m: %v\n", m)
+		parsed[idx] = make([]int, len(m)-1) // 35
+		for i, num := range m[1:] {
+			parsed[idx][i], _ = strconv.Atoi(num)
+		}
+		slices.Sort(parsed[idx])
+		matches := 0
+		for i := 0; i < len(parsed[idx])-1; i++ {
+			if parsed[idx][i] == parsed[idx][i+1] {
+				matches++
+			}
+		}
+		// fmt.Printf("matches: %v\n", matches)
+		cards[idx] = matches
+	}
+	for i := 0; i < len(instances); i++ {
+		instances[i] = 1
+	}
+	for i := 0; i < len(cards); i++ {
+		for j := 1; j <= cards[i]; j++ {
+			// fmt.Printf("i: %v j: %v\n", i, j)
+			instances[i+j] += instances[i]
+		}
+		// fmt.Printf("psums: %v\n", instances)
+	}
+	for _, v := range instances {
+		total += v
+	}
+	fmt.Printf("total: %v\n", total)
 }
